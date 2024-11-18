@@ -1,6 +1,6 @@
 {
   "name": "resource-injector",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.3",
   "description": "The ResourceInjector class dynamically loads JavaScript and CSS into the webpage, ensuring each resource is loaded only once, with error handling and optional load timeouts.",
   "author": "ux-ui.pro",
   "license": "MIT",
@@ -41,19 +41,23 @@
     "typescript": "5.4.5"
   },
   "keywords": [
-    "bubbles",
-    "animation",
-    "canvas",
-    "particles",
-    "web animation",
-    "JavaScript",
-    "rising bubbles",
-    "particle system",
-    "custom animation",
-    "canvas rendering",
-    "interactive animation",
-    "visual effects",
-    "frontend",
-    "HTML5"
+    "resource",
+    "injector",
+    "script",
+    "stylesheet",
+    "loader",
+    "dynamic",
+    "resource-loader",
+    "script-loader",
+    "style-loader",
+    "async",
+    "resource-injection",
+    "javascript",
+    "css",
+    "html",
+    "dynamic-loading",
+    "defer",
+    "promise",
+    "typescript"
   ]
 }
