@@ -4,9 +4,9 @@ class ResourceInjector {
   constructor() {}
 
   async loadScript(
-      jsUrl: string,
-      options: Partial<HTMLScriptElement> = {},
-      timeout: number = 10000
+    jsUrl: string,
+    options: Partial<HTMLScriptElement> = {},
+    timeout: number = 10000,
   ): Promise<void> {
     if (ResourceInjector.loadedResources.has(jsUrl)) {
       return ResourceInjector.loadedResources.get(jsUrl) as Promise<void>;
@@ -48,9 +48,9 @@ class ResourceInjector {
   }
 
   async loadStyle(
-      cssUrl: string,
-      options: Partial<HTMLLinkElement> = {},
-      timeout: number = 10000
+    cssUrl: string,
+    options: Partial<HTMLLinkElement> = {},
+    timeout: number = 10000,
   ): Promise<void> {
     if (ResourceInjector.loadedResources.has(cssUrl)) {
       return ResourceInjector.loadedResources.get(cssUrl) as Promise<void>;
