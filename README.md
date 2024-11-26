@@ -28,15 +28,29 @@ import ResourceInjector from 'resource-injector';
 
 &#10148; **Usage**
 ```javascript
-const resourceInjector = new ResourceInjector();
+import ResourceInjector from 'resource-injector';
 
-resourceInjector
-  .loadScript('https://example.com/script.js', { async: true }, 5000)
+const injector = new ResourceInjector();
+
+// Load a JavaScript resource
+injector
+  .loadResource({
+    url: 'https://example.com/script.js',
+    type: 'script',
+    options: { async: true },
+    timeout: 5000,
+    forceReload: true,
+  })
   .then(() => console.log('Script loaded successfully'))
   .catch(() => console.error('Failed to load script'));
 
-resourceInjector
-  .loadStyle('https://example.com/style.css', {}, 5000)
+// Load a CSS resource
+injector
+  .loadResource({
+    url: 'https://example.com/styles.css',
+    type: 'style',
+    timeout: 7000,
+  })
   .then(() => console.log('Style loaded successfully'))
   .catch(() => console.error('Failed to load style'));
 ```
@@ -44,39 +58,47 @@ resourceInjector
 
 &#10148; **Options**
 
-|  Option   |                           Type                           | Default | Description                                                                                     |
-|:---------:|:--------------------------------------------------------:|:-------:|:------------------------------------------------------------------------------------------------|
-|  `jsUrl`  |                         `string`                         |   `-`   | The URL of the JavaScript file to load.                                                         |
-| `cssUrl`  |                         `string`                         |   `-`   | The URL of the CSS file to load.                                                                |
-| `options` | `Partial<HTMLScriptElement> \| Partial<HTMLLinkElement>` |  `{}`   | Optional attributes for the `<script>` or `<link>` elements, such as `async`, `defer`, or `id`. |
-| `timeout` |                         `number`                         | `10000` | The time in milliseconds to wait before resolving if the resource fails to load.                |
+|    Option     |                           Type                           | Default | Description                                                                                     |
+|:-------------:|:--------------------------------------------------------:|:-------:|:------------------------------------------------------------------------------------------------|
+|     `url`     |                         `string`                         |   `-`   | The URL of the resource to load (JavaScript or CSS).                                            |
+|    `type`     |                  `'script' \| 'style'`                   |   `-`   | Specifies whether the resource is a JavaScript (`script`) or a CSS file (`style`).              |
+|   `options`   | `Partial<HTMLScriptElement> \| Partial<HTMLLinkElement>` |  `{}`   | Optional attributes for the `<script>` or `<link>` elements, such as `async`, `defer`, or `id`. |
+|   `timeout`   |                         `number`                         | `10000` | The time in milliseconds to wait before resolving if the resource fails to load.                |
+| `forceReload` |                        `boolean`                         | `false` | If `true`, forces reloading the resource even if it was already loaded.                         |
 
 <br>
 
 &#10148; **Methods**
 
-| Method         |                                Parameters                                 |     Returns     | Description                                            |
-|:---------------|:-------------------------------------------------------------------------:|:---------------:|:-------------------------------------------------------|
-| `loadScript()` | `(jsUrl: string, options?: Partial<HTMLScriptElement>, timeout?: number)` | `Promise<void>` | Dynamically loads a JavaScript file into the document. |
-| `loadStyle()`  | `(cssUrl: string, options?: Partial<HTMLLinkElement>, timeout?: number)`  | `Promise<void>` | Dynamically loads a CSS file into the document.        |
+| Method         |                            Parameters                             |     Returns     | Description                                                                       |
+|:---------------|:-----------------------------------------------------------------:|:---------------:|:----------------------------------------------------------------------------------|
+| `loadResource` | `{ url, type, options?, timeout?, forceReload? }: ResourceConfig` | `Promise<void>` | Dynamically loads a JavaScript or CSS resource based on the configuration object. |
 <br>
 
 &#10148; **Examples**
 
 <sub>Load a JavaScript File</sub>
 ```javascript
-const resourceInjector = new ResourceInjector();
-
-resourceInjector
-  .loadScript('https://example.com/script.js', { async: true }, 5000)
+injector
+  .loadResource({
+    url: 'https://example.com/script.js',
+    type: 'script',
+    options: { async: true },
+    timeout: 5000,
+    forceReload: true,
+  })
   .then(() => console.log('Script loaded'))
   .catch(() => console.error('Failed to load script'));
 ```
 
 <sub>Load a CSS File</sub>
 ```javascript
-resourceInjector
-  .loadStyle('https://example.com/style.css', {}, 5000)
+injector
+  .loadResource({
+    url: 'https://example.com/styles.css',
+    type: 'style',
+    timeout: 7000,
+  })
   .then(() => console.log('Style loaded'))
   .catch(() => console.error('Failed to load style'));
 ```
@@ -84,8 +106,14 @@ resourceInjector
 <sub>Handle Multiple Resources</sub>
 ```javascript
 Promise.all([
-  resourceInjector.loadScript('https://example.com/script1.js'),
-  resourceInjector.loadStyle('https://example.com/style1.css')
+  injector.loadResource({
+    url: 'https://example.com/script1.js',
+    type: 'script',
+  }),
+  injector.loadResource({
+    url: 'https://example.com/style1.css',
+    type: 'style',
+  }),
 ])
   .then(() => console.log('All resources loaded'))
   .catch(() => console.error('One or more resources failed to load'));
