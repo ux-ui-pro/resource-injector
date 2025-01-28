@@ -1,6 +1,6 @@
 {
   "name": "resource-injector",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The ResourceInjector class dynamically loads JavaScript and CSS into the webpage, ensuring each resource is loaded only once, with error handling and optional load timeouts.",
   "author": "ux-ui.pro",
   "license": "MIT",
