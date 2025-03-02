@@ -9,7 +9,7 @@
 [![GitHub package version](https://img.shields.io/github/package-json/v/ux-ui-pro/resource-injector.svg)](https://github.com/ux-ui-pro/resource-injector)
 [![NPM Downloads](https://img.shields.io/npm/dm/resource-injector.svg?style=flat)](https://www.npmjs.org/package/resource-injector)
 
-<sup>600B gzipped</sup>
+<sup>0.7kB gzipped</sup>
 
 </div>
 <br>
