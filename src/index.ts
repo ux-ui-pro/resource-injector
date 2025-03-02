@@ -57,13 +57,17 @@ class ResourceInjector {
 
       element.onload = (): void => {
         clearTimeout(timer);
+
         ResourceInjector.loadedResources.set(resourceUrl, promise);
+
         resolve();
       };
 
       element.onerror = (): void => {
         clearTimeout(timer);
+
         ResourceInjector.loadedResources.delete(resourceUrl);
+
         reject(new Error(`Failed to load resource: ${resourceUrl}`));
       };
 
