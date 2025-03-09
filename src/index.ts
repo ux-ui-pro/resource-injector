@@ -1,16 +1,16 @@
+interface LoadResourceConfig {
+  url: string;
+  type: 'script' | 'style';
+  options?: Partial<HTMLScriptElement> | Partial<HTMLLinkElement>;
+  timeout?: number;
+  forceReload?: boolean;
+  appendTimestamp?: boolean;
+}
+
 class ResourceInjector {
-  private static loadedResources: Map<string, Promise<void>> = new Map();
+  private static loadedResources = new Map<string, Promise<void>>();
 
-  constructor() {}
-
-  async loadResource(config: {
-    url: string;
-    type: 'script' | 'style';
-    options?: Partial<HTMLScriptElement | HTMLLinkElement>;
-    timeout?: number;
-    forceReload?: boolean;
-    appendTimestamp?: boolean;
-  }): Promise<void> {
+  public async loadResource(config: LoadResourceConfig): Promise<void> {
     const {
       url,
       type,
@@ -23,40 +23,24 @@ class ResourceInjector {
     const resourceUrl = appendTimestamp ? `${url}?t=${Date.now()}` : url;
 
     if (!forceReload && ResourceInjector.loadedResources.has(resourceUrl)) {
-      return ResourceInjector.loadedResources.get(resourceUrl) as Promise<void>;
+      return ResourceInjector.loadedResources.get(resourceUrl)!;
     }
 
     if (forceReload) {
-      const existingElement = document.querySelector(
-        type === 'script' ? `script[src="${url}"]` : `link[href="${url}"]`,
-      );
-
-      if (existingElement) {
-        existingElement.remove();
-      }
+      this.removeExistingResource(url, type);
 
       ResourceInjector.loadedResources.delete(resourceUrl);
     }
 
-    const promise: Promise<void> = new Promise((resolve, reject): void => {
-      const element: HTMLScriptElement | HTMLLinkElement =
-        type === 'script' ? document.createElement('script') : document.createElement('link');
+    const promise = new Promise<void>((resolve, reject): void => {
+      const element = this.createResourceElement(type, resourceUrl, options);
 
-      if (type === 'script') {
-        (element as HTMLScriptElement).src = resourceUrl;
-      } else {
-        (element as HTMLLinkElement).href = resourceUrl;
-        (element as HTMLLinkElement).rel = 'stylesheet';
-      }
-
-      Object.assign(element, options);
-
-      const timer: ReturnType<typeof setTimeout> = setTimeout((): void => {
+      const timerId = setTimeout((): void => {
         reject(new Error(`Resource load timeout: ${resourceUrl}`));
       }, timeout);
 
       element.onload = (): void => {
-        clearTimeout(timer);
+        clearTimeout(timerId);
 
         ResourceInjector.loadedResources.set(resourceUrl, promise);
 
@@ -64,7 +48,7 @@ class ResourceInjector {
       };
 
       element.onerror = (): void => {
-        clearTimeout(timer);
+        clearTimeout(timerId);
 
         ResourceInjector.loadedResources.delete(resourceUrl);
 
@@ -81,6 +65,36 @@ class ResourceInjector {
     ResourceInjector.loadedResources.set(resourceUrl, promise);
 
     return promise;
+  }
+
+  private removeExistingResource(url: string, type: 'script' | 'style'): void {
+    const selector = type === 'script' ? `script[src="${url}"]` : `link[href="${url}"]`;
+    const existingElement = document.querySelector(selector);
+
+    if (existingElement) {
+      existingElement.remove();
+    }
+  }
+
+  private createResourceElement(
+    type: 'script' | 'style',
+    resourceUrl: string,
+    options: Partial<HTMLScriptElement> | Partial<HTMLLinkElement>,
+  ): HTMLScriptElement | HTMLLinkElement {
+    let element: HTMLScriptElement | HTMLLinkElement;
+
+    if (type === 'script') {
+      element = document.createElement('script');
+      element.src = resourceUrl;
+    } else {
+      element = document.createElement('link');
+      element.href = resourceUrl;
+      element.rel = 'stylesheet';
+    }
+
+    Object.assign(element, options);
+
+    return element;
   }
 }
 
